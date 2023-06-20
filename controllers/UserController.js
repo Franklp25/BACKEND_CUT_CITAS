@@ -10,10 +10,6 @@ const save = async function (req, res) {
         const username = req.body.username;
         const email = req.body.email;
         const existingUser = await User.findOne({ $or: [{ id: id }, { username: username }, { email: email }] });
-        console.log(existingUser);
-        console.log(id)
-        console.log(username)
-        console.log(email)
         if (existingUser) {
             if (existingUser.id === id) { 
                 sendErrorResponse(res, 409, 'Error, el número de cédula ingresado ya se encuentra asociado a otro usuario');
@@ -28,7 +24,6 @@ const save = async function (req, res) {
             sendSuccessResponse(res, data, 'Registrado exitosamente');
         }
     } catch (error) {
-        console.log(error);
         sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
     }
 };
@@ -63,42 +58,51 @@ const update = async function (req, res) {
         const id = req.body.id;
         const username = req.body.username;
         const email = req.body.email;
-        const existingUser = await User.findOne({ $or: [{ id: id }, { username: username }, { email: email }] });
-        if (!existingUser) {
-            const data = await User.updateOne({ id: req.params.id },
-                {
-                    $set: {
-                        id: req.body.id,
-                        name: req.body.name,
-                        lastname: req.body.lastname,
-                        username: req.body.username,
-                        email: req.body.email,
-                        password: req.body.password,
-                        role: req.body.role
-                    }
-                },
-                { new: true }
-            );
-            sendSuccessResponse(res, data, 'Modificado exitosamente');
-        } else {
-            if (existingUser.id === id) { 
-                sendErrorResponse(res, 409, 'Error, el número de cédula ingresado ya se encuentra asociado a otro usuario');
-            } else if (existingUser.username === username) {
-                sendErrorResponse(res, 409, 'Error, el nombre de usuario ingresado ya se encuentra asociado a otro usuario');
-            } else if (existingUser.email === email) {
-                sendErrorResponse(res, 409, 'Error, el correo eletrónico ingresado ya se encuentra asociado a otro usuario');
+        const user = await User.findOne({ id: req.params.id });
+        if (user) {
+            const existingUser = await User.findOne({ $or: [{ id: id }, { username: username }, { email: email }] });
+            if (!existingUser || (existingUser.id === user.id || existingUser.username === user.username || existingUser.email === user.email)) {
+                const data = await User.updateOne({ id: req.params.id },
+                    {
+                        $set: {
+                            id: req.body.id,
+                            name: req.body.name,
+                            lastname: req.body.lastname,
+                            username: req.body.username,
+                            email: req.body.email,
+                            password: req.body.password,
+                            role: req.body.role
+                        }
+                    },
+                    { new: true }
+                );
+                sendSuccessResponse(res, data, 'Modificado exitosamente');
+            } else {
+                if (existingUser.id === id) { 
+                    sendErrorResponse(res, 409, 'Error, el número de cédula ingresado ya se encuentra asociado a otro usuario');
+                } else if (existingUser.username === username) {
+                    sendErrorResponse(res, 409, 'Error, el nombre de usuario ingresado ya se encuentra asociado a otro usuario');
+                } else if (existingUser.email === email) {
+                    sendErrorResponse(res, 409, 'Error, el correo eletrónico ingresado ya se encuentra asociado a otro usuario');
+                }
             }
+        } else {
+            sendErrorResponse(res, 404, 'Usuario no encontrado');
         }
     } catch (error) {
-
         sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
     }
 };
 
 const remove = async function (req, res) {
     try {
-        const data = await User.deleteOne({ id: req.params.id });
-        sendSuccessResponse(res, data, 'Eliminado exitosamente');
+        const user = await User.findOne({ id: req.params.id });
+        if (user) {
+            const data = await User.deleteOne({ id: req.params.id });
+            sendSuccessResponse(res, data, 'Eliminado exitosamente');
+        } else {
+            sendErrorResponse(res, 404, 'Usuario no encontrado');
+        }
     } catch (error) {
         sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
     }
