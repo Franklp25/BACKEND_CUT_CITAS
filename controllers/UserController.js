@@ -2,8 +2,6 @@
 import User from '../models/Users.js';
 import { sendSuccessResponse, sendErrorResponse } from '../middleware/responseHandler.js'
 
-const userController = {};
-
 const save = async function (req, res) {
     try {
         const id = req.body.id;
