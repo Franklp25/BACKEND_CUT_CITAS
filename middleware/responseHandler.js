@@ -1,7 +1,6 @@
 'use strict'
 
 const sendSuccessResponse = async (res, data, message) => {
-    console.log(res);
     const response = {
         status: 'success',
         data,
@@ -11,7 +10,6 @@ const sendSuccessResponse = async (res, data, message) => {
 };
 
 const sendErrorResponse = async (res, statusCode, message) => {
-    console.log(res);
     const response = {
         status: 'error',
         message

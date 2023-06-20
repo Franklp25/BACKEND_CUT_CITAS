@@ -2,37 +2,54 @@
 import User from '../models/Users.js';
 import { sendSuccessResponse, sendErrorResponse } from '../middleware/responseHandler.js'
 
-let userController = {};
+const userController = {};
 
-userController.save = async function (req, res) {
+const save = async function (req, res) {
     try {
-        const existingUser = await User.findOne({ id: req.body.id });
+        const id = req.body.id;
+        const username = req.body.username;
+        const email = req.body.email;
+        const existingUser = await User.findOne({ $or: [{ id: id }, { username: username }, { email: email }] });
+        console.log(existingUser);
+        console.log(id)
+        console.log(username)
+        console.log(email)
         if (existingUser) {
-            sendErrorResponse(res, 409, 'Error, el número de cédula ingresado ya se encuentra asociado a otro usuario');
+            if (existingUser.id === id) { 
+                sendErrorResponse(res, 409, 'Error, el número de cédula ingresado ya se encuentra asociado a otro usuario');
+            } else if (existingUser.username === username) {
+                sendErrorResponse(res, 409, 'Error, el nombre de usuario ingresado ya se encuentra asociado a otro usuario');
+            } else if (existingUser.email === email) {
+                sendErrorResponse(res, 409, 'Error, el correo eletrónico ingresado ya se encuentra asociado a otro usuario');
+            }
         } else {
-            let user = new User(req.body);
-            let data = user.save();
+            const user = new User(req.body);
+            const data = user.save();
             sendSuccessResponse(res, data, 'Registrado exitosamente');
         }
     } catch (error) {
+        console.log(error);
         sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
     }
 };
 
-userController.list = async function (req, res) {
+const list = async function (req, res) {
     try {
-        let data = await User.find({});
+        const data = await User.find({});
         sendSuccessResponse(res, data, null);
     } catch (error) {
         sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
     }
 };
 
-userController.search = async function (req, res) {
+const search = async function (req, res) {
     try {
-        let user = await User.findOne({ username: req.params.uname});
-        if (user) {
-            sendSuccessResponse(res, user, null);
+        const id = req.params.data;
+        const username = req.params.data;
+        const email = req.params.data;
+        const existingUser = await User.findOne({ $or: [{ id: id }, { username: username }, { email: email }] });
+        if (existingUser) {
+            sendSuccessResponse(res, existingUser, null);
         } else {
             sendErrorResponse(res, 404, 'Usuario no encontrado');
         }
@@ -41,11 +58,14 @@ userController.search = async function (req, res) {
     }
 };
 
-userController.update = async function (req, res) {
+const update = async function (req, res) {
     try {
-        let user = await User.findOne({ id: req.params.id });
-        if (user) {
-            let data = await User.updateOne({ id: req.params.id },
+        const id = req.body.id;
+        const username = req.body.username;
+        const email = req.body.email;
+        const existingUser = await User.findOne({ $or: [{ id: id }, { username: username }, { email: email }] });
+        if (!existingUser) {
+            const data = await User.updateOne({ id: req.params.id },
                 {
                     $set: {
                         id: req.body.id,
@@ -61,25 +81,33 @@ userController.update = async function (req, res) {
             );
             sendSuccessResponse(res, data, 'Modificado exitosamente');
         } else {
-            sendErrorResponse(res, 404, 'Usuario no encontrado');
+            if (existingUser.id === id) { 
+                sendErrorResponse(res, 409, 'Error, el número de cédula ingresado ya se encuentra asociado a otro usuario');
+            } else if (existingUser.username === username) {
+                sendErrorResponse(res, 409, 'Error, el nombre de usuario ingresado ya se encuentra asociado a otro usuario');
+            } else if (existingUser.email === email) {
+                sendErrorResponse(res, 409, 'Error, el correo eletrónico ingresado ya se encuentra asociado a otro usuario');
+            }
         }
     } catch (error) {
+
         sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
     }
 };
 
-userController.delete = async function (req, res) {
+const remove = async function (req, res) {
     try {
-        let user = await User.findOne({ id: req.params.id });
-        if (user) {
-            let data = await User.deleteOne({ id: req.params.id });
-            sendSuccessResponse(res, data, 'Eliminado exitosamente');
-        } else {
-            sendErrorResponse(res, 404, 'Usuario no encontrado');
-        }
+        const data = await User.deleteOne({ id: req.params.id });
+        sendSuccessResponse(res, data, 'Eliminado exitosamente');
     } catch (error) {
         sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
     }
 };
 
-export default userController;
+export {
+    save,
+    list,
+    search,
+    update,
+    remove
+};

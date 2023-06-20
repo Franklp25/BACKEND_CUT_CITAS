@@ -7,7 +7,7 @@ import bodyParser from 'body-parser';
 
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
-app.use('/cut-citas/user', usersRouter);
+app.use('/cut-citas/users', usersRouter);
 
 app.get('/', (req, res) => {
   res.send('¡Hola, mundo!');
