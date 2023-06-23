@@ -10,19 +10,20 @@ const save = async function (req, res) {
         const existingUser = await User.findOne({ $or: [{ id: id }, { username: username }, { email: email }] });
         if (existingUser) {
             if (existingUser.id === id) { 
-                sendErrorResponse(res, 409, 'Error, el número de cédula ingresado ya se encuentra asociado a otro usuario');
+                sendErrorResponse(res, 409, 'idError');
+                console.log(res);
             } else if (existingUser.username === username) {
-                sendErrorResponse(res, 409, 'Error, el nombre de usuario ingresado ya se encuentra asociado a otro usuario');
+                sendErrorResponse(res, 409, 'usernameError');
             } else if (existingUser.email === email) {
-                sendErrorResponse(res, 409, 'Error, el correo eletrónico ingresado ya se encuentra asociado a otro usuario');
+                sendErrorResponse(res, 409, 'emailError');
             }
         } else {
-            const user = new User(req.body);
-            const data = user.save();
-            sendSuccessResponse(res, data, 'Registrado exitosamente');
+            const data = await User.insertMany(req.body);
+            sendSuccessResponse(res, data[0], 'success');
+            console.log(res);
         }
     } catch (error) {
-        sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
+        sendErrorResponse(res, 500, 'serverError');
     }
 };
 
@@ -31,7 +32,7 @@ const list = async function (req, res) {
         const data = await User.find({});
         sendSuccessResponse(res, data, null);
     } catch (error) {
-        sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
+        sendErrorResponse(res, 500, 'serverError');
     }
 };
 
@@ -44,10 +45,10 @@ const search = async function (req, res) {
         if (existingUser) {
             sendSuccessResponse(res, existingUser, null);
         } else {
-            sendErrorResponse(res, 404, 'Usuario no encontrado');
+            sendErrorResponse(res, 404, 'notFound');
         }
     } catch (error) {
-        sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
+        sendErrorResponse(res, 500, 'serverError');
     }
 };
 
@@ -74,21 +75,21 @@ const update = async function (req, res) {
                     },
                     { new: true }
                 );
-                sendSuccessResponse(res, data, 'Modificado exitosamente');
+                sendSuccessResponse(res, data, 'success');
             } else {
                 if (existingUser.id === id) { 
-                    sendErrorResponse(res, 409, 'Error, el número de cédula ingresado ya se encuentra asociado a otro usuario');
+                    sendErrorResponse(res, 409, 'idError');
                 } else if (existingUser.username === username) {
-                    sendErrorResponse(res, 409, 'Error, el nombre de usuario ingresado ya se encuentra asociado a otro usuario');
+                    sendErrorResponse(res, 409, 'usernameError');
                 } else if (existingUser.email === email) {
-                    sendErrorResponse(res, 409, 'Error, el correo eletrónico ingresado ya se encuentra asociado a otro usuario');
+                    sendErrorResponse(res, 409, 'emailError');
                 }
             }
         } else {
-            sendErrorResponse(res, 404, 'Usuario no encontrado');
+            sendErrorResponse(res, 404, 'notFound');
         }
     } catch (error) {
-        sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
+        sendErrorResponse(res, 500, 'serverError');
     }
 };
 
@@ -97,12 +98,12 @@ const remove = async function (req, res) {
         const user = await User.findOne({ id: req.params.id });
         if (user) {
             const data = await User.deleteOne({ id: req.params.id });
-            sendSuccessResponse(res, data, 'Eliminado exitosamente');
+            sendSuccessResponse(res, data, 'success');
         } else {
-            sendErrorResponse(res, 404, 'Usuario no encontrado');
+            sendErrorResponse(res, 404, 'notFound');
         }
     } catch (error) {
-        sendErrorResponse(res, 500, 'Lo sentimos, ocurrió un problema con el servidor');
+        sendErrorResponse(res, 500, 'serverError');
     }
 };
 

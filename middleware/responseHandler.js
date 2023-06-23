@@ -2,7 +2,7 @@
 
 const sendSuccessResponse = async (res, data, message) => {
     const response = {
-        status: 'success',
+        status: 'ok',
         data,
         message
     };
