@@ -6,11 +6,10 @@ const uri = "mongodb+srv://Enma123:Kfzs7183@cluster0.k3iwr1b.mongodb.net/cut-cit
 
 export default async function run() {
   try {
-
     mongoose.connect(uri || 'mongodb://localhost/cut-citas_db', {
       useNewUrlParser: true,
       useUnifiedTopology: true
-  }).then(db => console.log('DATABASE IS CONNECTED')).catch(err => console.error(err));
+    });
   } catch (error) {
     console.error('Error:', error);
   }

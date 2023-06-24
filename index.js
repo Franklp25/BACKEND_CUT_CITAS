@@ -5,8 +5,8 @@ run();
 import usersRouter from './routes/users.js';
 import bodyParser from 'body-parser';
 
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 app.use('/cut-citas/users', usersRouter);
 
 app.get('/', (req, res) => {
@@ -15,5 +15,7 @@ app.get('/', (req, res) => {
 
 const port = 4000;
 app.listen(port, () => {
-  console.log(`Servidor Express escuchando en el puerto ${port}`);
+  //console.log(`Servidor Express escuchando en el puerto ${port}`);
 });
+
+export default app;

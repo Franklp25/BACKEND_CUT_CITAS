@@ -20,7 +20,6 @@ const save = async function (req, res) {
         } else {
             const data = await User.insertMany(req.body);
             sendSuccessResponse(res, data[0], 'success');
-            console.log(res);
         }
     } catch (error) {
         sendErrorResponse(res, 500, 'serverError');
