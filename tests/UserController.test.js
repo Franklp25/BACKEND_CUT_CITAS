@@ -91,3 +91,12 @@ describe('Different situations saving users in the database', () => {
   });
 });
 
+describe('Getting all users in th database', () => {
+  test('This will get all users', async () => {
+    const response = await request(app).
+    get('/cut-citas/users');
+
+    expect(response.status).toBe(200);
+  });
+});
+

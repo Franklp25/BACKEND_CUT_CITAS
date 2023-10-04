@@ -11,7 +11,6 @@ const save = async function (req, res) {
         if (existingUser) {
             if (existingUser.id === id) { 
                 sendErrorResponse(res, 409, 'idError');
-                console.log(res);
             } else if (existingUser.username === username) {
                 sendErrorResponse(res, 409, 'usernameError');
             } else if (existingUser.email === email) {
