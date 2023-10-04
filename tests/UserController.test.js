@@ -11,7 +11,8 @@ describe('Different situations saving users in the database', () => {
         username: 's', 
         email: 's@gmail.com', 
         password: 's', 
-        role: 'admin' 
+        role: 'admin',
+        state: 'A'
     };
 
     // Llamar a la función de create
@@ -33,7 +34,8 @@ describe('Different situations saving users in the database', () => {
         username: 'v', 
         email: 'v@gmail.com', 
         password: 'v', 
-        role: 'admin' 
+        role: 'admin',
+        state: 'A'
     };
 
     // Llamar a la función de create
@@ -55,7 +57,8 @@ describe('Different situations saving users in the database', () => {
         username: 's', 
         email: 'v@gmail.com', 
         password: 'v', 
-        role: 'admin' 
+        role: 'admin',
+        state: 'A'
     };
 
     // Llamar a la función de create
@@ -77,7 +80,8 @@ describe('Different situations saving users in the database', () => {
         username: 'v', 
         email: 's@gmail.com', 
         password: 'v', 
-        role: 'admin' 
+        role: 'admin',
+        state: 'A'
     };
 
     // Llamar a la función de create

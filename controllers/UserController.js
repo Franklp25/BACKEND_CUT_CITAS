@@ -7,6 +7,7 @@ const save = async function (req, res) {
         const id = req.body.id;
         const username = req.body.username;
         const email = req.body.email;
+        req.body.state = "A";
         const existingUser = await User.findOne({ $or: [{ id: id }, { username: username }, { email: email }] });
         if (existingUser) {
             if (existingUser.id === id) { 
@@ -50,6 +51,7 @@ const search = async function (req, res) {
     }
 };
 
+//update the user data
 const update = async function (req, res) {
     try {
         const id = req.body.id;
@@ -91,6 +93,20 @@ const update = async function (req, res) {
     }
 };
 
+const updateState = async function (req, res) {
+    try {
+        const data = await User.updateOne({id: req.params.id}, {
+            $set: {
+                state: "I"
+            },
+        },
+        { new: true });
+        sendSuccessResponse(res, data, null);
+    } catch (err){
+        sendErrorResponse(res, 500, 'serverError');
+    }
+}
+
 const remove = async function (req, res) {
     try {
         const user = await User.findOne({ id: req.params.id });
@@ -110,5 +126,6 @@ export {
     list,
     search,
     update,
-    remove
+    remove,
+    updateState
 };
