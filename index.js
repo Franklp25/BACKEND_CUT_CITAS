@@ -5,6 +5,11 @@ run();
 import usersRouter from './routes/users.js';
 import bodyParser from 'body-parser';
 
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
+dotenv.config();
+const secret= process.env.SECRET;
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/cut-citas/users', usersRouter);

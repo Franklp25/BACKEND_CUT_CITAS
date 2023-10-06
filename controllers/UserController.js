@@ -18,8 +18,11 @@ const save = async function (req, res) {
                 sendErrorResponse(res, 409, 'emailError');
             }
         } else {
-            const data = await User.insertMany(req.body);
-            sendSuccessResponse(res, data[0], 'success');
+           // const data = await User.insertMany(req.body);
+           /// sendSuccessResponse(res, data[0], 'success');*/
+           const user = new User(req.body);
+           const usuarioalmacenado=await user.save();
+           res.json(usuarioalmacenado);
         }
     } catch (error) {
         sendErrorResponse(res, 500, 'serverError');
@@ -121,11 +124,26 @@ const remove = async function (req, res) {
     }
 };
 
+const autenticate = async(req, res)=>{
+const{email, password} = req.body;
+const user = await User.findOne({email});
+if(!user){
+    sendErrorResponse(res, 404, 'user notFound');
+
+}
+
+console.log(user);
+sendSuccessResponse(res, user, 'correcto');
+
+
+}
+
 export {
     save,
     list,
     search,
     update,
     remove,
-    updateState
+    updateState,
+    autenticate
 };
