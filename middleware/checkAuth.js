@@ -23,7 +23,7 @@ return next();
 }
 if(!token){
     const error = new Error("token no valido");
-    res.status(404).json({msg: error.message});
+   return  res.status(404).json({msg: error.message});
 }
 
 next();

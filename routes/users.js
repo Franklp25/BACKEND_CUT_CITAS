@@ -18,7 +18,7 @@ import  {
     profile
 }  from '../controllers/UserController.js';
 
-router.route('/').get(checkAuth,list).post(checkAuth,save);
+router.route('/', checkAuth).get(checkAuth,list).post(checkAuth,save);
 router.route('/:data').get(search);
 router.route('/:id').put(update).delete(remove);
 router.route('/updatestate/:id').put(updateState);
