@@ -1,7 +1,7 @@
 'use strict'
 import User from '../models/Users.js';
-import { sendSuccessResponse, sendErrorResponse } from '../middleware/responseHandler.js'
-
+import { sendSuccessResponse, sendErrorResponse } from '../middleware/responseHandler.js';
+import generateJWT from '../middleware/generateJWT.js';
 const save = async function (req, res) {
     try {
         const id = req.body.id;
@@ -131,11 +131,29 @@ if(!user){
     sendErrorResponse(res, 404, 'user notFound');
 
 }
+if(await user.validatePassword(password)){
 
-console.log(user);
-sendSuccessResponse(res, user, 'correcto');
+        res.json({
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            token: generateJWT(user._id),
+        });
+}else{
+    sendErrorResponse(res, 404, 'Password incorrecto');
+}
 
 
+/*console.log(user);
+sendSuccessResponse(res, user, 'correcto');*/
+
+
+}
+
+const profile = async (req, res) =>{
+const {user} = req;
+res.json(user);
+//console.log(user);
 }
 
 export {
@@ -145,5 +163,6 @@ export {
     update,
     remove,
     updateState,
-    autenticate
+    autenticate,
+    profile
 };

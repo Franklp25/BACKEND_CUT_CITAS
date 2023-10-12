@@ -3,6 +3,7 @@ import express from 'express';
 const router = express.Router();
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import checkAuth from '../middleware/checkAuth.js';
 dotenv.config();
 const secret= process.env.SECRET;
 
@@ -13,14 +14,17 @@ import  {
     update,
     remove,
     updateState,
-    autenticate
+    autenticate,
+    profile
 }  from '../controllers/UserController.js';
 
-router.route('/').get(list).post(save);
+router.route('/').get(checkAuth,list).post(checkAuth,save);
 router.route('/:data').get(search);
 router.route('/:id').put(update).delete(remove);
 router.route('/updatestate/:id').put(updateState);
 router.route('/login',autenticate).post(autenticate);
+
+router.get("/profile/pro",checkAuth, list);
 
 
 
