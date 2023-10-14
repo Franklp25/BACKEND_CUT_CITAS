@@ -4,12 +4,14 @@ import run from "./databaseConnection.js";
 run();
 import usersRouter from './routes/users.js';
 import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 const secret= process.env.SECRET;
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use('/cut-citas/users', usersRouter);
